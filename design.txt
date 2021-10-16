@@ -1,0 +1,7 @@
+Create a fixed thread pool of (nthread - 1) threads
+When nthread = 1, use regular bfs instead of threading methods
+Create a queue of NFA states. Each state needs a worker thread to explore. Initially, only the start state is enqueued.
+Create a Task class that implements the Runnable interface, which is the task that a worker thread will do. Its run() method is the actual function that does the check.  When there are two or more possible states to transition to, put them on the queue along with the number of steps it has taken to get there, and be done with the current worker thread. Otherwise, just keep going to find if the current path will lead to the final state when we get to the end of the string.
+Match Termination Check: I pass in an empty indicator list to each thread, when a match is found, that thread will add a boolean “true” to the list. So when I find the list to be non-empty, I know I have found a match.
+No Match Found Termination: When there is nothing on the block queue, and all the worker threads are inactive, and the indicator list is still empty. We know we have explored the whole NFA and didn’t find a match.
+When there are states on the blocking queue, I will loop through them and let the thread pool schedule a worker thread to unqueue one state and let it do its job.
